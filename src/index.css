@@ -1,1 +1,38 @@
 @import "tailwindcss";
+
+.heading-font {
+  font-family: "Sora", sans-serif;
+}
+
+.body-font {
+  font-family: "Outfit", sans-serif;
+}
+
+/* ===========================
+   WishCraft Title Glow
+=========================== */
+
+@keyframes glowPulse {
+  0% {
+    text-shadow:
+      0 0 8px rgba(255,255,255,0.15),
+      0 0 15px rgba(236,72,153,0.15);
+  }
+
+  50% {
+    text-shadow:
+      0 0 20px rgba(236,72,153,0.35),
+      0 0 35px rgba(168,85,247,0.35),
+      0 0 50px rgba(217,70,239,0.25);
+  }
+
+  100% {
+    text-shadow:
+      0 0 8px rgba(255,255,255,0.15),
+      0 0 15px rgba(236,72,153,0.15);
+  }
+}
+
+.titleGlow {
+  animation: glowPulse 3s ease-in-out infinite;
+}

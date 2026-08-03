@@ -1,11 +1,7 @@
-function Landing() {
-  return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
-      <h1 className="text-6xl font-bold text-white">
-        Welcome to WishCraft 🚀
-      </h1>
-    </div>
-  );
+import Hero from "../components/Hero";
+
+function Landing({ setScreen }) {
+  return <Hero setScreen={setScreen} />;
 }
 
 export default Landing;

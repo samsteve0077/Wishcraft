@@ -1,7 +1,7 @@
-import Landing from "./pages/Landing";
+import CreatorDashboard from "./pages/CreatorDashboard";
 
 function App() {
-  return <Landing />;
+  return <CreatorDashboard />;
 }
 
 export default App;
