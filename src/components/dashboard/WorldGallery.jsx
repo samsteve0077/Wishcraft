@@ -1,4 +1,3 @@
-import { useState } from "react";
 import WorldCard from "./WorldCard";
 
 // Girl Images
@@ -17,8 +16,11 @@ import sports from "../../assets/boy/sports.jpg";
 import superhero from "../../assets/boy/superhero.jpg";
 import adventure from "../../assets/boy/adventure.jpg";
 
-function WorldGallery({ character }) {
-  const [selectedWorld, setSelectedWorld] = useState("");
+function WorldGallery({
+  character,
+  creatorData,
+  setCreatorData,
+}) {
 
   const worlds = {
     girl: [
@@ -91,22 +93,25 @@ function WorldGallery({ character }) {
   const accent = character === "girl" ? "purple" : "blue";
 
   return (
-    <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
 
-        {worlds[character]?.map((world) => (
-          <WorldCard
-            key={world.title}
-            title={world.title}
-            subtitle={world.subtitle}
-            image={world.image}
-            accent={accent}
-            selected={selectedWorld === world.title}
-            onClick={() => setSelectedWorld(world.title)}
-          />
-        ))}
+      {worlds[character]?.map((world) => (
+        <WorldCard
+          key={world.title}
+          title={world.title}
+          subtitle={world.subtitle}
+          image={world.image}
+          accent={accent}
+          selected={creatorData.world === world.title}
+          onClick={() =>
+            setCreatorData((prev) => ({
+              ...prev,
+              world: world.title,
+            }))
+          }
+        />
+      ))}
 
-      </div>
     </div>
   );
 }

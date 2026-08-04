@@ -97,6 +97,8 @@ const pageContent = {
 function CreatorDashboard() {
   const [step, setStep] = useState(1);
 
+const [maxUnlockedStep, setMaxUnlockedStep] = useState(1);
+
   const [creatorData, setCreatorData] = useState({
     recipientName: "",
     creatorName: "",
@@ -136,13 +138,28 @@ function CreatorDashboard() {
         );
 
       case 3:
-        return <MemoryStep />;
+  return (
+    <MemoryStep
+      creatorData={creatorData}
+      setCreatorData={setCreatorData}
+    />
+  );
 
       case 4:
-        return <LetterStep />;
+  return (
+    <LetterStep
+      creatorData={creatorData}
+      setCreatorData={setCreatorData}
+    />
+  );
 
       case 5:
-        return <MusicStep />;
+  return (
+    <MusicStep
+      creatorData={creatorData}
+      setCreatorData={setCreatorData}
+    />
+  );
 
       case 6:
         return <PreviewStep />;
@@ -231,7 +248,11 @@ function CreatorDashboard() {
         {/* Progress */}
 
         <div className="mb-8">
-          <ProgressBar currentStep={step} />
+          <ProgressBar
+  currentStep={step}
+  maxUnlockedStep={maxUnlockedStep}
+  onStepClick={setStep}
+/>
         </div>
 
         {/* Current Step */}
@@ -262,7 +283,15 @@ function CreatorDashboard() {
           </button>
 
           <button
-            onClick={() => setStep((prev) => Math.min(prev + 1, 7))}
+            onClick={() => {
+
+  const next = Math.min(step + 1, 7);
+
+  setStep(next);
+
+  setMaxUnlockedStep((prev) => Math.max(prev, next));
+
+}}
             disabled={step === 7}
             className="
               body-font

@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 function WorldCard({
   title,
   subtitle,
@@ -7,12 +9,32 @@ function WorldCard({
   onClick,
 }) {
   return (
-    <div
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 80,
+        scale: 0.92,
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+        scale: 1,
+      }}
+      viewport={{
+        once: true,
+        amount: 0.25,
+      }}
+      transition={{
+        duration: 0.7,
+        ease: "easeOut",
+      }}
+      whileHover={{
+        y: -12,
+      }}
       onClick={onClick}
       className={`group relative overflow-hidden rounded-3xl cursor-pointer
       h-[420px]
       transition-all duration-500 ease-out
-      hover:-translate-y-3
       ${
         selected
           ? accent === "purple"
@@ -31,11 +53,11 @@ function WorldCard({
           w-full h-full
           object-cover
           transition-transform duration-700 ease-out
-          group-hover:scale-105
+          group-hover:scale-110
         "
       />
 
-      {/* Dark Overlay */}
+      {/* Overlay */}
 
       <div
         className="
@@ -51,10 +73,26 @@ function WorldCard({
         "
       />
 
-      {/* Bottom Content */}
+      {/* Bottom Glass */}
 
-      <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
+      <div
+        className="
+          absolute
+          bottom-0
+          left-0
+          right-0
 
+          p-6
+
+          z-10
+
+          backdrop-blur-md
+
+          bg-gradient-to-t
+          from-black/60
+          to-transparent
+        "
+      >
         <h2
           className="
             text-3xl
@@ -84,10 +122,14 @@ function WorldCard({
         <div
           className="
             mt-6
+
             opacity-0
+
             translate-y-2
+
             group-hover:opacity-100
             group-hover:translate-y-0
+
             transition-all
             duration-500
           "
@@ -102,19 +144,39 @@ function WorldCard({
             DISCOVER →
           </span>
         </div>
-
       </div>
 
       {/* Selected Badge */}
 
       {selected && (
-        <div
+        <motion.div
+          initial={{
+            scale: 0,
+            opacity: 0,
+          }}
+          animate={{
+            scale: 1,
+            opacity: 1,
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 300,
+          }}
           className={`
-            absolute top-5 right-5
-            backdrop-blur-md
+            absolute
+            top-5
+            right-5
+
+            backdrop-blur-xl
+
             rounded-full
-            px-4 py-2
-            text-sm font-semibold
+
+            px-4
+            py-2
+
+            text-sm
+            font-semibold
+
             ${
               accent === "purple"
                 ? "bg-purple-500/20 text-purple-200 border border-purple-400/30"
@@ -122,10 +184,10 @@ function WorldCard({
             }
           `}
         >
-          ✓ World Selected
-        </div>
+          ✨ Selected
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }
 
