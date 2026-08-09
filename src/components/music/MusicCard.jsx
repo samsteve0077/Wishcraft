@@ -3,72 +3,64 @@ import {
   Play,
   Pause,
   Sparkles,
+  Music2,
+  Disc3,
 } from "lucide-react";
+
+import {
+  formatDuration,
+  getSongDurationSeconds,
+} from "../../utils/music";
 
 function MusicCard({
   song,
-
-  variant = "default",
-
   selected,
-
   playing,
-
   accent = "purple",
-
   onSelect,
-
   onPlay,
-
   onReplace,
-
   onRemove,
-
-  onStudio,
 }) {
+  const durationSeconds = getSongDurationSeconds(song);
+
+  const durationLabel = formatDuration(
+    Number.isFinite(durationSeconds)
+      ? durationSeconds
+      : 0
+  );
+
+  const isUploaded = song?.type === "uploaded";
 
   return (
-
     <motion.div
-
       initial={{
         opacity: 0,
-        y: 50,
+        y: 40,
       }}
-
       whileInView={{
         opacity: 1,
         y: 0,
       }}
-
       viewport={{
         once: true,
       }}
-
       whileHover={{
-        y: -10,
-        scale: 1.02,
+        y: -8,
+        scale: 1.015,
       }}
-
       transition={{
-        duration: 0.45,
+        duration: 0.4,
+        ease: [0.22, 1, 0.36, 1],
       }}
-
       onClick={onSelect}
-
       className={`
         group
-
         relative
-
         overflow-hidden
-
         rounded-3xl
-
         cursor-pointer
-
         border
-
         transition-all
         duration-500
 
@@ -81,27 +73,256 @@ function MusicCard({
         }
       `}
     >
+      {/* ================================================== */}
+      {/* ALBUM COVER                                        */}
+      {/* ================================================== */}
 
-      {/* Album Cover */}
+      <div
+        className="
+          relative
+          h-80
+          overflow-hidden
+          bg-[#101016]
+        "
+      >
+        {isUploaded ? (
+          /* ==================================================
+             CSS UPLOADED MUSIC COVER
+          ================================================== */
 
-      <div className="relative h-72 overflow-hidden">
+          <div
+            className="
+              relative
+              w-full
+              h-full
+              overflow-hidden
 
-        <img
-          src={song.cover}
-          alt={song.title}
-          className="
-            w-full
-            h-full
-            object-cover
+              bg-gradient-to-br
+              from-[#12091f]
+              via-[#32105c]
+              to-[#12091f]
 
-            transition-transform
-            duration-700
+              flex
+              items-center
+              justify-center
+            "
+          >
+            {/* Background glow */}
 
-            group-hover:scale-110
-          "
-        />
+            <div
+              className="
+                absolute
+                -top-20
+                -left-20
 
-        {/* Dark Overlay */}
+                w-64
+                h-64
+
+                rounded-full
+
+                bg-violet-600/30
+                blur-3xl
+              "
+            />
+
+            <div
+              className="
+                absolute
+                -bottom-24
+                -right-20
+
+                w-72
+                h-72
+
+                rounded-full
+
+                bg-fuchsia-600/25
+                blur-3xl
+              "
+            />
+
+            {/* Decorative circles */}
+
+            <div
+              className="
+                absolute
+                w-64
+                h-64
+
+                rounded-full
+
+                border
+                border-white/10
+
+                opacity-60
+              "
+            />
+
+            <div
+              className="
+                absolute
+                w-48
+                h-48
+
+                rounded-full
+
+                border
+                border-violet-300/10
+
+                opacity-70
+              "
+            />
+
+            {/* Center album element */}
+
+            <div
+              className="
+                relative
+                z-10
+
+                flex
+                flex-col
+                items-center
+                justify-center
+              "
+            >
+              <div
+                className="
+                  w-28
+                  h-28
+
+                  rounded-full
+
+                  bg-gradient-to-br
+                  from-violet-500
+                  via-fuchsia-500
+                  to-purple-700
+
+                  shadow-[0_0_50px_rgba(168,85,247,.45)]
+
+                  flex
+                  items-center
+                  justify-center
+
+                  group-hover:scale-110
+
+                  transition-transform
+                  duration-700
+                "
+              >
+                <div
+                  className="
+                    w-20
+                    h-20
+
+                    rounded-full
+
+                    bg-[#171020]
+
+                    flex
+                    items-center
+                    justify-center
+
+                    border
+                    border-white/10
+                  "
+                >
+                  <Music2
+                    size={38}
+                    className="
+                      text-fuchsia-300
+                    "
+                  />
+                </div>
+              </div>
+
+              <div
+                className="
+                  mt-6
+
+                  flex
+                  items-center
+                  gap-2
+
+                  px-4
+                  py-2
+
+                  rounded-full
+
+                  bg-black/30
+                  border
+                  border-white/10
+                  backdrop-blur-xl
+                "
+              >
+                <Disc3
+                  size={15}
+                  className="text-violet-300"
+                />
+
+                <span
+                  className="
+                    text-xs
+                    font-semibold
+                    tracking-[0.2em]
+                    text-white/80
+                  "
+                >
+                  YOUR MUSIC
+                </span>
+              </div>
+            </div>
+          </div>
+        ) : song?.cover ? (
+          /* ==================================================
+             DEFAULT SONG COVER
+          ================================================== */
+
+          <img
+            src={song.cover}
+            alt={
+              song.title ||
+              "Music cover"
+            }
+            className="
+              block
+              w-full
+              h-full
+              object-cover
+
+              transition-transform
+              duration-700
+
+              group-hover:scale-110
+            "
+          />
+        ) : (
+          /* ==================================================
+             GENERIC FALLBACK
+          ================================================== */
+
+          <div
+            className="
+              w-full
+              h-full
+
+              flex
+              items-center
+              justify-center
+
+              bg-gradient-to-br
+              from-violet-700
+              via-fuchsia-700
+              to-purple-700
+
+              text-7xl
+            "
+          >
+            🎵
+          </div>
+        )}
+
+        {/* Bottom gradient */}
 
         <div
           className="
@@ -109,23 +330,23 @@ function MusicCard({
             inset-0
 
             bg-gradient-to-t
-
             from-black
             via-black/20
             to-transparent
+
+            pointer-events-none
           "
         />
 
-        {/* Selected Badge */}
+        {/* Selected badge */}
 
         {selected && (
-
           <div
             className="
               absolute
-
               top-5
               right-5
+              z-10
 
               flex
               items-center
@@ -136,42 +357,37 @@ function MusicCard({
               px-4
               py-2
 
-              bg-black/35
-
+              bg-black/40
               backdrop-blur-xl
 
               text-sm
+              text-white
             "
           >
-
             <Sparkles
               size={16}
-              className="text-fuchsia-300"
+              className="
+                text-fuchsia-300
+              "
             />
 
             Selected
-
           </div>
-
         )}
 
-        {/* Play Button */}
+        {/* Play / Pause */}
 
         <button
-
-          onClick={(e) => {
-
-            e.stopPropagation();
-
-            onPlay();
-
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation();
+            onPlay?.();
           }}
-
           className="
             absolute
-
             bottom-5
             right-5
+            z-10
 
             w-14
             h-14
@@ -179,62 +395,88 @@ function MusicCard({
             rounded-full
 
             bg-white/15
-
             backdrop-blur-xl
 
             flex
             items-center
             justify-center
 
+            hover:bg-white/25
             hover:scale-110
 
             transition-all
           "
+          aria-label={
+            playing
+              ? "Pause song"
+              : "Play song"
+          }
         >
-
           {playing ? (
-
             <Pause size={26} />
-
           ) : (
-
             <Play
               size={26}
               className="ml-1"
             />
-
           )}
-
         </button>
-
       </div>
 
-            {/* Card Content */}
+      {/* ================================================== */}
+      {/* SONG INFORMATION                                   */}
+      {/* ================================================== */}
 
-      <div className="bg-[#17171F] p-6">
-
-        {/* Song Title */}
-
-        <h3 className="heading-font text-2xl font-bold">
-          {song.title}
+      <div
+        className="
+          bg-[#17171F]
+          p-6
+        "
+      >
+        <h3
+          className="
+            heading-font
+            text-2xl
+            font-bold
+            text-white
+            truncate
+          "
+        >
+          {song?.title ||
+            "Untitled Song"}
         </h3>
 
-        {/* Subtitle */}
-
-        <p className="body-font text-slate-400 mt-2">
-          {song.subtitle}
+        <p
+          className="
+            body-font
+            text-slate-400
+            mt-2
+          "
+        >
+          {song?.subtitle ||
+            "Music"}
         </p>
 
         {/* Duration */}
 
-        <div className="flex items-center justify-between mt-6">
-
-          <span className="body-font text-slate-500">
-            {song.duration}
+        <div
+          className="
+            flex
+            items-center
+            justify-between
+            mt-6
+          "
+        >
+          <span
+            className="
+              body-font
+              text-slate-500
+            "
+          >
+            Duration • {durationLabel}
           </span>
 
           {selected && (
-
             <span
               className="
                 px-3
@@ -245,7 +487,6 @@ function MusicCard({
                 text-xs
 
                 bg-fuchsia-500/15
-
                 border
                 border-fuchsia-500/30
 
@@ -254,116 +495,80 @@ function MusicCard({
             >
               Selected
             </span>
-
           )}
-
         </div>
 
-        {/* Uploaded Song Actions */}
+        {/* ==================================================
+            UPLOADED MUSIC ACTIONS
+        ================================================== */}
 
-        {variant === "uploaded" && (
-
-          <>
+        {isUploaded && (
+          <div
+            className="
+              grid
+              grid-cols-2
+              gap-3
+              mt-6
+            "
+          >
+            {/* Replace */}
 
             <button
-              onClick={(e) => {
-
-                e.stopPropagation();
-
-                onStudio?.();
-
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                onReplace?.();
               }}
               className="
-                w-full
+                py-3
+                rounded-xl
 
-                mt-6
+                bg-sky-500/10
+                border
+                border-sky-500/30
 
-                rounded-2xl
+                text-white
 
-                py-3.5
-
-                bg-gradient-to-r
-                from-fuchsia-600
-                via-purple-600
-                to-violet-600
-
-                hover:scale-[1.02]
+                hover:bg-sky-500/20
+                hover:border-sky-400/50
 
                 transition-all
-                duration-300
-
-                font-semibold
               "
             >
-              🎼 Open WishCraft Studio
+              🔄 Replace
             </button>
 
-            <div className="grid grid-cols-2 gap-4 mt-4">
+            {/* Delete */}
 
-              <button
-                onClick={(e) => {
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                onRemove?.();
+              }}
+              className="
+                py-3
+                rounded-xl
 
-                  e.stopPropagation();
+                bg-red-500/10
+                border
+                border-red-500/30
 
-                  onReplace?.();
+                text-white
 
-                }}
-                className="
-                  rounded-xl
+                hover:bg-red-500/20
+                hover:border-red-400/50
 
-                  py-3
-
-                  border
-                  border-white/10
-
-                  hover:bg-white/5
-
-                  transition-all
-                  duration-300
-                "
-              >
-                🔄 Replace
-              </button>
-
-              <button
-                onClick={(e) => {
-
-                  e.stopPropagation();
-
-                  onRemove?.();
-
-                }}
-                className="
-                  rounded-xl
-
-                  py-3
-
-                  border
-                  border-red-500/20
-
-                  text-red-300
-
-                  hover:bg-red-500/10
-
-                  transition-all
-                  duration-300
-                "
-              >
-                🗑 Remove
-              </button>
-
-            </div>
-
-          </>
-
+                transition-all
+              "
+            >
+              🗑 Delete
+            </button>
+          </div>
         )}
-
       </div>
-
-          </motion.div>
-
+    </motion.div>
   );
-
 }
 
 export default MusicCard;
