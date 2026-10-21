@@ -1,5 +1,11 @@
-function PreviewStep() {
-  return <h1 className="text-4xl text-center">Preview Step</h1>;
+import Experience from "../experience/Experience";
+
+function PreviewStep({ creatorData }) {
+  return (
+    <div className="w-full min-h-screen">
+      <Experience creatorData={creatorData} />
+    </div>
+  );
 }
 
 export default PreviewStep;

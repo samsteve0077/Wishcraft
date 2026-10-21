@@ -9,7 +9,6 @@ function MusicMode({
   creatorData,
   setCreatorData,
 }) {
-
   const modes = [
     {
       id: "single",
@@ -37,19 +36,18 @@ function MusicMode({
     },
   ];
 
+  // Change the music mode without deleting existing selections.
   const selectMode = (mode) => {
     setCreatorData((prev) => ({
       ...prev,
       musicMode: mode,
-      music: null,
     }));
   };
 
   return (
     <div className="space-y-8">
-
+      {/* Heading */}
       <div className="text-center">
-
         <h2 className="heading-font text-5xl font-bold">
           Choose Music Experience
         </h2>
@@ -59,9 +57,9 @@ function MusicMode({
           Keep one soundtrack throughout, create different music
           for each chapter, or let the memories speak in silence.
         </p>
-
       </div>
 
+      {/* Music Mode Cards */}
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -76,16 +74,13 @@ function MusicMode({
         }}
         className="grid grid-cols-1 lg:grid-cols-3 gap-8"
       >
-
         {modes.map((mode) => {
-
           const Icon = mode.icon;
 
           const selected =
             creatorData.musicMode === mode.id;
 
           return (
-
             <motion.div
               key={mode.id}
               variants={{
@@ -109,129 +104,88 @@ function MusicMode({
               className={`
                 relative
                 cursor-pointer
-
                 rounded-3xl
-
                 border
-
                 ${
                   selected
                     ? "border-fuchsia-500 shadow-[0_0_40px_rgba(168,85,247,.35)]"
                     : "border-white/10 hover:border-white/20"
                 }
-
                 bg-white/[0.04]
-
                 backdrop-blur-xl
-
                 overflow-hidden
-
                 p-8
-
                 transition-all
                 duration-300
               `}
             >
-
               {/* Top Glow */}
-
               <div
                 className={`
                   absolute
                   inset-x-0
                   top-0
-
                   h-1
-
                   bg-gradient-to-r
                   ${mode.accent}
                 `}
               />
 
               {/* Icon */}
-
               <div
                 className={`
                   w-20
                   h-20
-
                   rounded-2xl
-
                   flex
                   items-center
                   justify-center
-
                   bg-gradient-to-br
                   ${mode.accent}
-
                   shadow-lg
                 `}
               >
-
                 <Icon
                   size={38}
                   className="text-white"
                 />
-
               </div>
 
               {/* Title */}
-
               <h3 className="heading-font text-3xl font-bold mt-8">
-
                 {mode.title}
-
               </h3>
 
               {/* Description */}
-
               <p className="body-font text-slate-400 mt-5 leading-8">
-
                 {mode.description}
-
               </p>
 
-              {/* Selected */}
-
+              {/* Selected Indicator */}
               {selected && (
-
                 <div
                   className="
                     mt-8
-
                     inline-flex
-
                     px-4
                     py-2
-
                     rounded-full
-
                     bg-fuchsia-500/15
-
                     border
                     border-fuchsia-400/30
-
                     text-fuchsia-300
-
                     font-semibold
                   "
                 >
                   ✓ Selected
                 </div>
-
               )}
-
             </motion.div>
-
           );
-
         })}
-
       </motion.div>
-
     </div>
   );
-
 }
 
 export default MusicMode;

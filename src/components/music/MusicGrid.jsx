@@ -62,37 +62,20 @@ function MusicGrid({
   const currentAudioRef = useRef(null);
 
   const [playingSong, setPlayingSong] = useState("");
-  const [resolvedDurations, setResolvedDurations] =
-    useState({});
+  const [resolvedDurations, setResolvedDurations] = useState({});
 
   /*
-   * IMPORTANT:
+   * Uploaded music is stored separately from
+   * the currently selected music.
    *
-   * Uploaded music is kept separately from
-   * creatorData.music.
+   * creatorData.music
+   *     = currently selected song
    *
-   * creatorData.music = currently selected song
-   * uploadedSong = uploaded song that must remain
-   *                available in the grid
+   * creatorData.uploadedMusic
+   *     = uploaded song that must remain available
    */
-  const [uploadedSong, setUploadedSong] =
-    useState(
-      creatorData.music?.type === "uploaded"
-        ? creatorData.music
-        : null
-    );
 
-  /* ======================================================
-     SYNC EXISTING UPLOADED MUSIC
-  ====================================================== */
-
-  useEffect(() => {
-    if (
-      creatorData.music?.type === "uploaded"
-    ) {
-      setUploadedSong(creatorData.music);
-    }
-  }, [creatorData.music]);
+  const uploadedSong = creatorData.uploadedMusic || null;
 
   /* ======================================================
      LOAD DEFAULT SONG DURATIONS
@@ -128,10 +111,7 @@ function MusicGrid({
 
     return () => {
       audioNodes.forEach(
-        ({
-          audio,
-          handleLoadedMetadata,
-        }) => {
+        ({ audio, handleLoadedMetadata }) => {
           audio.removeEventListener(
             "loadedmetadata",
             handleLoadedMetadata
@@ -164,13 +144,14 @@ function MusicGrid({
   ====================================================== */
 
   const songs = useMemo(() => {
-    const resolvedDefaultSongs =
-      defaultSongs.map((song) => ({
+    const resolvedDefaultSongs = defaultSongs.map(
+      (song) => ({
         ...song,
         durationSeconds: Number(
           resolvedDurations[song.title] ?? 0
         ),
-      }));
+      })
+    );
 
     if (!uploadedSong) {
       return resolvedDefaultSongs;
@@ -178,25 +159,14 @@ function MusicGrid({
 
     const resolvedUploadedSong = {
       ...uploadedSong,
-
       type: "uploaded",
-
       subtitle:
         uploadedSong.subtitle ||
         "Your Uploaded Song",
-
-      /*
-       * Temporary stable cover.
-       */
-      cover:
-        uploadedSong.cover ||
-        celebrationCover,
-
+      cover: uploadedSong.cover || null,
       durationSeconds: Number(
         uploadedSong.durationSeconds ??
-          getSongDurationSeconds(
-            uploadedSong
-          )
+          getSongDurationSeconds(uploadedSong)
       ),
     };
 
@@ -309,20 +279,15 @@ function MusicGrid({
   ====================================================== */
 
   const selectSong = (song) => {
-    /*
-     * IMPORTANT:
-     *
-     * Selecting a default song MUST NOT delete
-     * the uploaded song.
-     *
-     * uploadedSong remains untouched.
-     *
-     * Only creatorData.music changes because
-     * that represents the currently selected song.
-     */
-
     setCreatorData((previous) => ({
       ...previous,
+
+      /*
+       * IMPORTANT:
+       * We ONLY change the selected music.
+       *
+       * uploadedMusic stays untouched.
+       */
 
       music: {
         ...song,
@@ -349,7 +314,7 @@ function MusicGrid({
         cover:
           song.cover || null,
 
-        trim: null,
+        trim: song.trim ?? null,
       },
     }));
   };
@@ -364,7 +329,7 @@ function MusicGrid({
     }
 
     if (
-      playingSong === uploadedSong.title
+      creatorData.music?.type === "uploaded"
     ) {
       stopCurrentAudio();
     }
@@ -379,23 +344,23 @@ function MusicGrid({
       }
     }
 
-    /*
-     * Remove the uploaded song from the grid.
-     */
-    setUploadedSong(null);
+    setCreatorData((previous) => ({
+      ...previous,
 
-    /*
-     * If the uploaded song was the currently
-     * selected song, clear the selected music.
-     */
-    if (
-      creatorData.music?.type === "uploaded"
-    ) {
-      setCreatorData((previous) => ({
-        ...previous,
-        music: null,
-      }));
-    }
+      /*
+       * Remove persistent uploaded music.
+       */
+      uploadedMusic: null,
+
+      /*
+       * Clear currently selected music
+       * only if the uploaded song was selected.
+       */
+      music:
+        previous.music?.type === "uploaded"
+          ? null
+          : previous.music,
+    }));
   };
 
   /* ======================================================
@@ -432,7 +397,6 @@ function MusicGrid({
       alert(
         "Please upload a valid audio file."
       );
-
       return;
     }
 
@@ -443,7 +407,6 @@ function MusicGrid({
       alert(
         "Maximum file size is 25 MB."
       );
-
       return;
     }
 
@@ -495,24 +458,27 @@ function MusicGrid({
         durationSeconds:
           totalSeconds,
 
-        cover: celebrationCover,
+        cover: null,
 
         trim: null,
       };
 
       /*
-       * Update the persistent uploaded song.
+       * IMPORTANT:
+       * Save the replacement permanently
+       * as uploadedMusic.
        */
-      setUploadedSong(
-        newUploadedSong
-      );
 
-      /*
-       * The replaced song becomes
-       * the currently selected song.
-       */
       setCreatorData((previous) => ({
         ...previous,
+
+        uploadedMusic:
+          newUploadedSong,
+
+        /*
+         * Replacement also becomes
+         * the currently selected song.
+         */
         music: newUploadedSong,
       }));
 
@@ -525,12 +491,12 @@ function MusicGrid({
     };
   };
 
+  /* ======================================================
+     RENDER
+  ====================================================== */
+
   return (
     <div className="w-full">
-
-      {/* ==================================================
-          MUSIC GRID
-      ================================================== */}
 
       <div
         className="
@@ -581,10 +547,6 @@ function MusicGrid({
         ))}
       </div>
 
-      {/* ==================================================
-          HIDDEN REPLACE INPUT
-      ================================================== */}
-
       <input
         ref={replaceInputRef}
         type="file"
@@ -596,6 +558,7 @@ function MusicGrid({
           );
         }}
       />
+
     </div>
   );
 }

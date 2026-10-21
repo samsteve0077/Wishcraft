@@ -4,6 +4,7 @@ import {
   Images,
   Mail,
   Music,
+  CircleHelp,
   Eye,
   PartyPopper,
   Check,
@@ -29,6 +30,10 @@ const steps = [
   {
     icon: Music,
     title: "Melody",
+  },
+  {
+    icon: CircleHelp,
+    title: "Question",
   },
   {
     icon: Eye,
